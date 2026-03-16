@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Erin & Matthew</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:#f6f2ef;
+  font-family:'Playfair Display', serif;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* petals */
+.petal{
+  position:fixed;
+  top:-50px;
+  border-radius:50%;
+  opacity:0.8;
+  animation-name:fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  pointer-events:none;
+  transform-origin:center;
+  box-shadow:0 0 6px rgba(0,0,0,0.1);
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);}
+}
+
+/* layout */
+.container{display:flex;height:100vh;width:100vw;}
+
+/* LEFT SIDE */
+.left{
+  width:50%;
+  min-width:300px;
+  background:linear-gradient(135deg,#f8ece8,#ffffff);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+.left::before{
+  content:"";
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:linear-gradient(120deg, rgba(255,192,203,0.15), rgba(255,255,0,0.1), rgba(173,216,230,0.15));
+  pointer-events:none;
+}
+
+.title{font-family:'Great Vibes', cursive;font-size:68px;color:#8c5c5c;margin-bottom:10px;text-align:center;}
+.subtitle{font-size:18px;color:#666;margin-bottom:20px;letter-spacing:1px;text-align:center;}
+
+.invite-card{
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 25px 60px rgba(0,0,0,0.18);
+  background:white;
+  padding:12px;
+  transition: transform 0.2s ease;
+  transform-style: preserve-3d;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.invite-card img{
+  width:auto;
+  height:90vh;
+  max-width:90%;
+  object-fit:contain;
+  display:block;
+  margin:0 auto;
+}
+
+.date{margin-top:20px;font-size:16px;color:#8c8c8c;letter-spacing:1px;text-align:center;}
+.countdown{margin-top:10px;font-size:15px;color:#a87c7c;text-align:center;}
+
+/* RIGHT SIDE */
+.right{width:50%;background:#fbfbfb;border-left:1px solid #eee;}
+.right iframe{display:block;width:100%;height:100%;border:none;overflow:hidden;}
+
+/* fade-in animation */
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:900px){
+  body{overflow:auto;}
+  .container{flex-direction:column;}
+  .left{width:100%;padding:30px 20px;}
+  .right{width:100%;height:70vh;}
+  .title{font-size:50px;}
+}
+</style>
+</head>
+<body>
+
+<!-- floating petals -->
+<script>
+const colors=["#FFC0CB","#FFD700","#ADFF2F","#87CEFA","#FF69B4","#FFA07A","#DA70D6","#98FB98","#FFB6C1"];
+for(let i=0;i<80;i++){ // more petals for richness
+  const p=document.createElement("div");
+  p.className="petal";
+  p.style.left=Math.random()*100+"vw";
+  p.style.width=5+Math.random()*15+"px";
+  p.style.height=5+Math.random()*15+"px";
+  p.style.background=colors[Math.floor(Math.random()*colors.length)];
+  p.style.opacity=Math.random()*0.8+0.2;
+  p.style.animationDuration=(5+Math.random()*8)+"s";
+  p.style.animationDelay=Math.random()*5+"s";
+  p.style.transform=`rotate(${Math.random()*360}deg)`;
+  document.body.appendChild(p);
+}
+</script>
+
+<div class="container">
+<div class="left">
+  <div class="title">Erin & Matthew</div>
+  <div class="subtitle">We invite you to celebrate</div>
+  <div class="invite-card" id="inviteCard">
+    <img src="invite.jpg" alt="Wedding Invitation">
+  </div>
+  <p class="date">May 22, 2026 • Montreal</p>
+  <div class="countdown" id="countdown"></div>
+</div>
+
+<div class="right">
+  <iframe src="https://erin-and-matthew.anrsvp.com/?embed=true"></iframe>
+</div>
+</div>
+
+<script>
+// countdown
+const weddingDate=new Date("May 22, 2026 16:00:00").getTime();
+const timer=setInterval(function(){
+  const now=new Date().getTime();
+  const distance=weddingDate-now;
+  const days=Math.floor(distance/(1000*60*60*24));
+  document.getElementById("countdown").innerHTML=days+" days until we say 'I do'";
+  if(distance<0){clearInterval(timer);document.getElementById("countdown").innerHTML="It's wedding day!";}
+},1000);
+
+// 3D tilt
+const card=document.getElementById("inviteCard");
+card.addEventListener("mousemove",e=>{
+  const rect=card.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const y=e.clientY-rect.top;
+  const centerX=rect.width/2;
+  const centerY=rect.height/2;
+  const rotateX=-(y-centerY)/20;
+  const rotateY=(x-centerX)/20;
+  card.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+});
+card.addEventListener("mouseleave",()=>{card.style.transform="rotateX(0) rotateY(0)";});
+</script>
+
+</body>
+</html>
